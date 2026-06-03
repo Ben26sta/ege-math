@@ -219,7 +219,7 @@ function TrainerScreen({ taskNum, progress, onProgress, onBack }) {
     try {
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-api-key": "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", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+        headers: { "Content-Type": "application/json", "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
@@ -450,7 +450,7 @@ function ChatScreen() {
     setLoading(true);
     try {
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST", headers: { "Content-Type": "application/json", "x-api-key": "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", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+        method: "POST", headers: { "Content-Type": "application/json", "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: SYSTEM_PROMPT, messages: newMsgs }),
       });
       const data = await resp.json();

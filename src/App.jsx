@@ -229,7 +229,7 @@ function TrainerScreen({ taskNum, progress, onProgress, onBack }) {
       });
       const data = await resp.json();
       setAiExplain(data.content?.map(b => b.text || "").join("") || "Ошибка");
-    } catch { setAiExplain("Ошибка соединения"); }
+    } catch(e) { setAiExplain("Ошибка: " + e.message); }
     setAiLoading(false);
   }
 
@@ -455,7 +455,7 @@ function ChatScreen() {
       });
       const data = await resp.json();
       setMessages([...newMsgs, { role: "assistant", content: data.content?.map(b => b.text || "").join("") || "Ошибка" }]);
-    } catch { setMessages([...newMsgs, { role: "assistant", content: "Ошибка соединения." }]); }
+    } catch(e) { setMessages([...newMsgs, { role: "assistant", content: "Ошибка: " + e.message }]); }
     setLoading(false);
   }
 

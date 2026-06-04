@@ -24,7 +24,6 @@ const ACHIEVEMENTS_LIST = [
   { id:"navigator", icon:"🎯", title:"Целеустремлённый", desc:"Открыть Навигатор поступления", check:(s)=>s.meta?.navigatorUsed },
 ];
 
-// Карточки для повторения
 const FLASHCARDS = {
   math: [
     { q:"Формула дискриминанта", a:"D = b² − 4ac" },
@@ -35,8 +34,6 @@ const FLASHCARDS = {
     { q:"Производная xⁿ", a:"(xⁿ)' = n·xⁿ⁻¹" },
     { q:"Производная sin x", a:"(sin x)' = cos x" },
     { q:"Производная cos x", a:"(cos x)' = −sin x" },
-    { q:"Производная eˣ", a:"(eˣ)' = eˣ" },
-    { q:"Производная ln x", a:"(ln x)' = 1/x" },
     { q:"log₂(8) = ?", a:"3 (так как 2³ = 8)" },
     { q:"Основное тригонометрическое тождество", a:"sin²x + cos²x = 1" },
     { q:"sin(30°) = ?", a:"0.5 = 1/2" },
@@ -44,7 +41,6 @@ const FLASHCARDS = {
     { q:"Площадь треугольника", a:"S = ½ · a · h" },
     { q:"Теорема Пифагора", a:"c² = a² + b²" },
     { q:"Площадь круга", a:"S = π·r²" },
-    { q:"Длина окружности", a:"C = 2·π·r" },
     { q:"Площадь трапеции", a:"S = ½·(a+b)·h" },
     { q:"Формула процентов", a:"X% от N = N · X/100" },
   ],
@@ -59,45 +55,35 @@ const FLASHCARDS = {
     { q:"Деепричастный оборот: главное правило", a:"Действие деепричастия = действие подлежащего" },
     { q:"Что такое паронимы?", a:"Слова похожие по звучанию, но разные по значению" },
     { q:"каталОг или катАлог?", a:"каталОг — ударение на О" },
-    { q:"Прямое и переносное значение", a:"Прямое = буквальное. Переносное = образное (метафора)" },
-    { q:"квартАл или квАртал?", a:"квартАл — ударение на А" },
   ],
   social: [
-    { q:"Что такое социальная стратификация?", a:"Деление общества на слои (страты) по доходу, власти, престижу, образованию" },
+    { q:"Что такое социальная стратификация?", a:"Деление общества на слои по доходу, власти, престижу, образованию" },
     { q:"Виды социальной мобильности", a:"Вертикальная (вверх/вниз) и горизонтальная (без изменения статуса)" },
-    { q:"ВВП — что это?", a:"Валовой внутренний продукт — стоимость всех конечных товаров и услуг в стране за год" },
+    { q:"ВВП — что это?", a:"Стоимость всех конечных товаров и услуг в стране за год" },
     { q:"Закон спроса", a:"При росте цены — спрос падает (обратная зависимость)" },
     { q:"Что такое инфляция?", a:"Устойчивый рост цен и обесценивание денег" },
     { q:"Три ветви власти в РФ", a:"Законодательная (ФС), Исполнительная (Правительство), Судебная (суды)" },
     { q:"Когда принята Конституция РФ?", a:"12 декабря 1993 года" },
-    { q:"Полная дееспособность в РФ — с какого возраста?", a:"С 18 лет (эмансипация возможна с 16)" },
+    { q:"Полная дееспособность — с какого возраста?", a:"С 18 лет (эмансипация возможна с 16)" },
     { q:"Что такое девиантное поведение?", a:"Отклонение от принятых в обществе норм" },
-    { q:"Признаки правового государства", a:"Верховенство закона, разделение властей, гарантии прав граждан" },
-    { q:"Виды безработицы", a:"Фрикционная (поиск работы), структурная (устаревание профессий), циклическая (кризис)" },
+    { q:"Признаки правового государства", a:"Верховенство закона, разделение властей, гарантии прав" },
   ],
   english: [
     { q:"Make vs Do: ошибки", a:"MAKE mistakes/decision/effort. DO homework/sport/business" },
-    { q:"Present Perfect — когда?", a:"Опыт, результат важен сейчас, with: ever/never/already/just/yet" },
+    { q:"Present Perfect — когда?", a:"Опыт, результат важен сейчас. Маркеры: ever/never/already/just/yet" },
     { q:"Past Perfect — когда?", a:"Действие завершилось ДО другого события в прошлом" },
     { q:"Say vs Tell", a:"SAY something. TELL someone (tell me, tell a story)" },
-    { q:"Суффикс -ful", a:"Прилагательное = полный чего-то (hopeful, careful, useful)" },
-    { q:"Суффикс -less", a:"Прилагательное = без чего-то (hopeless, careless, useless)" },
-    { q:"Префикс un-", a:"Отрицание для прилагательных (unhappy, unable, unclear)" },
+    { q:"Суффикс -ful", a:"Прилагательное = полный чего-то (hopeful, careful)" },
+    { q:"Суффикс -less", a:"Прилагательное = без чего-то (hopeless, careless)" },
+    { q:"Префикс un-", a:"Отрицание для прилагательных (unhappy, unable)" },
     { q:"interested IN или AT?", a:"interested IN (интересуется чем-то)" },
     { q:"Watch vs Look vs See", a:"WATCH — движение. LOOK — направлять взгляд. SEE — видеть непроизвольно" },
-    { q:"Суффикс -tion/-sion", a:"Существительное от глагола (education, information, decision)" },
-    { q:"Суффикс -ly", a:"Наречие от прилагательного (quickly, carefully, happily)" },
     { q:"Lend vs Borrow", a:"LEND — дать взаймы. BORROW — взять взаймы" },
   ]
 };
 
 function getAllSolved(p) { return Object.keys(p).filter(k=>k!=="meta").reduce((acc,k)=>acc+Object.values(p[k]?.solved||{}).reduce((a,b)=>a+b,0),0); }
 function getAllCorrect(p) { return Object.keys(p).filter(k=>k!=="meta").reduce((acc,k)=>acc+Object.values(p[k]?.correct||{}).reduce((a,b)=>a+b,0),0); }
-function predictScore(p) {
-  const s=getAllSolved(p); const c=getAllCorrect(p);
-  const acc=s>0?c/s:0;
-  return Math.round(40+Math.min(30,s*0.3)+acc*30);
-}
 
 function ProgressBar({ value, max, color="#4f7ef7", theme }) {
   const T=THEMES[theme];
@@ -123,7 +109,7 @@ function WelcomeScreen({ onClose, theme }) {
   const steps=[
     { icon:"📚", title:"ЕГЭ — 4 предмета", text:"Математика, Русский язык, Обществознание, Английский. Всё в одном приложении!" },
     { icon:"✏️", title:"Тренажёр + Карточки", text:"Задачи с вариантами ответов. Карточки для запоминания формул. Типичные ошибки к каждому заданию." },
-    { icon:"🎯", title:"Навигатор поступления", text:"Выбери вуз мечты — узнай нужный балл и сколько не хватает. База 60+ вузов по всей России." },
+    { icon:"🎯", title:"Навигатор поступления", text:"130+ вузов по всей России. Выбери вуз — узнай нужные баллы и предметы ЕГЭ." },
     { icon:"📝", title:"Пробный экзамен", text:"Экзамен на время. После — разбор ошибок и примерный балл." },
     { icon:"🏆", title:"Достижения", text:"Получай награды за прогресс! Прогресс сохраняется автоматически." },
   ];
@@ -164,48 +150,34 @@ function SubjectSelector({ currentSubject, onSelect, theme }) {
 
 function FlashcardsScreen({ subject, theme }) {
   const T=THEMES[theme]; const cards=FLASHCARDS[subject]||[];
-  const [idx,setIdx]=useState(0); const [flipped,setFlipped]=useState(false); const [known,setKnown]=useState(new Set()); const [unknown,setUnknown]=useState(new Set());
-  const card=cards[idx];
-  const subj=SUBJECTS[subject];
-
+  const [idx,setIdx]=useState(0); const [flipped,setFlipped]=useState(false);
+  const [known,setKnown]=useState(new Set()); const [unknown,setUnknown]=useState(new Set());
+  const card=cards[idx]; const subj=SUBJECTS[subject];
   function next(isKnown) {
     if(isKnown) setKnown(k=>new Set([...k,idx])); else setUnknown(u=>new Set([...u,idx]));
-    setFlipped(false);
-    setTimeout(()=>setIdx(i=>(i+1)%cards.length),200);
+    setFlipped(false); setTimeout(()=>setIdx(i=>(i+1)%cards.length),200);
   }
-
   return (
     <div style={{ padding:16, overflowY:"auto", maxHeight:"calc(100vh - 175px)" }}>
-      <div style={{ fontSize:17, fontWeight:"bold", color:T.text, marginBottom:4 }}>🃏 Карточки — {subj.title}</div>
-      <div style={{ fontSize:13, color:T.subtext, marginBottom:12 }}>Карточка {idx+1} из {cards.length} · Знаю: {known.size} · Повторю: {unknown.size}</div>
-      <div style={{ marginBottom:16 }}><ProgressBar value={idx} max={cards.length} color={subj.color} theme={theme}/></div>
-
-      <div onClick={()=>setFlipped(!flipped)} style={{ background:T.card, border:`2px solid ${flipped?subj.color:T.border}`, borderRadius:20, padding:32, marginBottom:20, textAlign:"center", cursor:"pointer", minHeight:180, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", transition:"all 0.3s" }}>
+      <div style={{ fontSize:16, fontWeight:"bold", color:T.text, marginBottom:3 }}>🃏 Карточки — {subj.title}</div>
+      <div style={{ fontSize:12, color:T.subtext, marginBottom:10 }}>Карточка {idx+1} из {cards.length} · Знаю: {known.size} · Повторю: {unknown.size}</div>
+      <div style={{ marginBottom:14 }}><ProgressBar value={idx} max={cards.length} color={subj.color} theme={theme}/></div>
+      <div onClick={()=>setFlipped(!flipped)} style={{ background:T.card, border:`2px solid ${flipped?subj.color:T.border}`, borderRadius:20, padding:32, marginBottom:18, textAlign:"center", cursor:"pointer", minHeight:170, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", transition:"all 0.3s" }}>
         {!flipped ? (
-          <>
-            <div style={{ fontSize:12, color:T.subtext, marginBottom:12, textTransform:"uppercase", letterSpacing:1 }}>Вопрос</div>
-            <div style={{ fontSize:18, fontWeight:"bold", color:T.text, lineHeight:1.5 }}>{card?.q}</div>
-            <div style={{ fontSize:12, color:T.subtext, marginTop:16 }}>Нажми чтобы увидеть ответ</div>
-          </>
+          <><div style={{ fontSize:12, color:T.subtext, marginBottom:10, textTransform:"uppercase", letterSpacing:1 }}>Вопрос</div>
+          <div style={{ fontSize:17, fontWeight:"bold", color:T.text, lineHeight:1.5 }}>{card?.q}</div>
+          <div style={{ fontSize:12, color:T.subtext, marginTop:14 }}>Нажми чтобы увидеть ответ</div></>
         ) : (
-          <>
-            <div style={{ fontSize:12, color:subj.color, marginBottom:12, textTransform:"uppercase", letterSpacing:1 }}>Ответ</div>
-            <div style={{ fontSize:18, fontWeight:"bold", color:subj.color, lineHeight:1.5 }}>{card?.a}</div>
-          </>
+          <><div style={{ fontSize:12, color:subj.color, marginBottom:10, textTransform:"uppercase", letterSpacing:1 }}>Ответ</div>
+          <div style={{ fontSize:17, fontWeight:"bold", color:subj.color, lineHeight:1.5 }}>{card?.a}</div></>
         )}
       </div>
-
-      {flipped && (
+      {flipped ? (
         <div style={{ display:"flex", gap:12 }}>
-          <button onClick={()=>next(false)} style={{ flex:1, padding:14, background:"rgba(248,113,113,0.1)", border:"1px solid #f87171", borderRadius:14, color:"#f87171", cursor:"pointer", fontFamily:"inherit", fontSize:15 }}>
-            🔄 Повторю
-          </button>
-          <button onClick={()=>next(true)} style={{ flex:1, padding:14, background:"rgba(74,222,128,0.1)", border:"1px solid #4ade80", borderRadius:14, color:"#4ade80", cursor:"pointer", fontFamily:"inherit", fontSize:15 }}>
-            ✓ Знаю!
-          </button>
+          <button onClick={()=>next(false)} style={{ flex:1, padding:13, background:"rgba(248,113,113,0.1)", border:"1px solid #f87171", borderRadius:14, color:"#f87171", cursor:"pointer", fontFamily:"inherit", fontSize:14 }}>🔄 Повторю</button>
+          <button onClick={()=>next(true)} style={{ flex:1, padding:13, background:"rgba(74,222,128,0.1)", border:"1px solid #4ade80", borderRadius:14, color:"#4ade80", cursor:"pointer", fontFamily:"inherit", fontSize:14 }}>✓ Знаю!</button>
         </div>
-      )}
-      {!flipped && <div style={{ textAlign:"center", fontSize:13, color:T.subtext }}>👆 Нажми на карточку чтобы перевернуть</div>}
+      ) : <div style={{ textAlign:"center", fontSize:12, color:T.subtext }}>👆 Нажми на карточку чтобы перевернуть</div>}
     </div>
   );
 }
@@ -217,7 +189,6 @@ function HomeScreen({ progress, subject, onNavigate, theme }) {
   const totalCorrect=Object.values(sp.correct).reduce((a,b)=>a+b,0);
   const accuracy=totalSolved>0?Math.round(totalCorrect/totalSolved*100):0;
   const allSolved=getAllSolved(progress);
-  const myScore=predictScore(progress);
   const unlockedCount=ACHIEVEMENTS_LIST.filter(a=>a.check(progress)).length;
   const weakTopics=Object.entries(sp.solved).filter(([k,v])=>v>0).map(([k])=>({num:k,acc:Math.round((sp.correct[k]||0)/sp.solved[k]*100)})).filter(t=>t.acc<60).slice(0,2);
 
@@ -228,20 +199,24 @@ function HomeScreen({ progress, subject, onNavigate, theme }) {
         <div style={{ fontSize:12, color:T.subtext, marginTop:2 }}>{subj.description}</div>
       </div>
 
-      {/* Прогноз балла */}
-      <div style={{ background:`linear-gradient(135deg,${subj.color}20,${subj.color}08)`, border:`1px solid ${subj.color}40`, borderRadius:16, padding:14, marginBottom:12, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <div>
-          <div style={{ fontSize:12, color:T.subtext }}>Прогноз балла ЕГЭ</div>
-          <div style={{ fontSize:28, fontWeight:"bold", color:subj.color }}>{allSolved > 0 ? myScore : "—"}</div>
-          <div style={{ fontSize:11, color:T.subtext }}>{allSolved > 0 ? "из 100 по предмету" : "Реши задачи для прогноза"}</div>
+      {/* Навигатор поступления — заметная кнопка */}
+      <button onClick={()=>onNavigate("navigator")} style={{ width:"100%", marginBottom:14, padding:"14px 16px", background:`linear-gradient(135deg,#1a2540,#0d1830)`, border:"1px solid #4f7ef7", borderRadius:16, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", gap:14, textAlign:"left", transition:"all 0.2s" }}
+        onMouseEnter={e=>e.currentTarget.style.background="linear-gradient(135deg,#1e2d50,#111e3a)"}
+        onMouseLeave={e=>e.currentTarget.style.background="linear-gradient(135deg,#1a2540,#0d1830)"}>
+        <div style={{ width:44, height:44, borderRadius:12, background:"linear-gradient(135deg,#4f7ef7,#a855f7)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>🎯</div>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:14, fontWeight:"bold", color:"#fff", marginBottom:2 }}>Навигатор поступления</div>
+          <div style={{ fontSize:12, color:"#6b7db3" }}>130+ вузов · Нужные баллы и предметы</div>
         </div>
-        <button onClick={()=>onNavigate("navigator")} style={{ padding:"10px 14px", background:subj.color, border:"none", borderRadius:12, color:"#fff", cursor:"pointer", fontFamily:"inherit", fontSize:13, fontWeight:"bold" }}>
-          🎯 Мой вуз
-        </button>
-      </div>
+        <div style={{ color:"#4f7ef7", fontSize:18 }}>→</div>
+      </button>
 
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:12 }}>
-        {[{v:totalSolved,l:"Решено",c:subj.color,i:"✏️"},{v:`${accuracy}%`,l:"Точность",c:"#f59e0b",i:"🎯"},{v:`${unlockedCount}`,l:"Награды",c:"#f59e0b",i:"🏆",click:()=>onNavigate("achievements")}].map((s,i)=>(
+        {[
+          { v:totalSolved, l:"Решено", c:subj.color, i:"✏️" },
+          { v:`${accuracy}%`, l:"Точность", c:"#f59e0b", i:"🎯" },
+          { v:`${unlockedCount}`, l:"Награды", c:"#f59e0b", i:"🏆", click:()=>onNavigate("achievements") }
+        ].map((s,i)=>(
           <div key={i} onClick={s.click} style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:12, padding:10, textAlign:"center", cursor:s.click?"pointer":"default" }}>
             <div style={{ fontSize:16 }}>{s.i}</div>
             <div style={{ fontSize:16, fontWeight:"bold", color:s.c }}>{s.v}</div>
@@ -254,7 +229,8 @@ function HomeScreen({ progress, subject, onNavigate, theme }) {
         <div style={{ background:"rgba(245,158,11,0.08)", border:"1px solid rgba(245,158,11,0.2)", borderRadius:12, padding:"10px 14px", marginBottom:10, display:"flex", alignItems:"center", gap:10 }}>
           <span style={{ fontSize:20 }}>🔥</span>
           <div>
-            <div style={{ fontSize:13, fontWeight:"bold", color:"#f59e0b" }}>{progress.meta.days} {progress.meta.days===1?"день":progress.meta.days<5?"дня":"дней"} подряд! Всего задач: {allSolved}</div>
+            <div style={{ fontSize:13, fontWeight:"bold", color:"#f59e0b" }}>{progress.meta.days} {progress.meta.days===1?"день":progress.meta.days<5?"дня":"дней"} подряд!</div>
+            <div style={{ fontSize:11, color:T.subtext }}>Всего задач решено: {allSolved}</div>
           </div>
         </div>
       )}
@@ -300,16 +276,8 @@ function TrainerScreen({ subject, taskNum, progress, onProgress, onBack, theme }
   const [qIndex,setQIndex]=useState(0); const [answer,setAnswer]=useState(""); const [result,setResult]=useState(null);
   const [showTheory,setShowTheory]=useState(false); const [showMistakes,setShowMistakes]=useState(false);
   const q=task.questions[qIndex];
-
-  function checkAnswer() {
-    const isCorrect=q.type==="choice"?answer===q.answer:answer.trim().replace(",",".")===q.answer;
-    setResult(isCorrect?"correct":"wrong"); onProgress(subject,taskNum,isCorrect);
-  }
-  function next() {
-    if(qIndex<task.questions.length-1){setQIndex(qIndex+1);setAnswer("");setResult(null);setShowMistakes(false);}
-    else onBack();
-  }
-
+  function checkAnswer() { const isCorrect=q.type==="choice"?answer===q.answer:answer.trim().replace(",",".")===q.answer; setResult(isCorrect?"correct":"wrong"); onProgress(subject,taskNum,isCorrect); }
+  function next() { if(qIndex<task.questions.length-1){setQIndex(qIndex+1);setAnswer("");setResult(null);setShowMistakes(false);}else onBack(); }
   return (
     <div style={{ padding:"14px 16px", overflowY:"auto", maxHeight:"calc(100vh - 130px)" }}>
       <button onClick={onBack} style={{ background:"none", border:"none", color:subj.color, fontSize:14, cursor:"pointer", marginBottom:10, padding:0 }}>← Назад</button>
@@ -408,15 +376,15 @@ function AchievementsScreen({ progress, theme }) {
 
 function LearnTab({ subject, onNavigate, theme }) {
   const T=THEMES[theme]; const subj=SUBJECTS[subject];
-  const [mode,setMode]=useState("tasks"); // tasks | cards
+  const [mode,setMode]=useState("tasks");
   if(mode==="cards") return <FlashcardsScreen subject={subject} theme={theme}/>;
   return (
     <div style={{ padding:"14px 16px", overflowY:"auto", maxHeight:"calc(100vh - 175px)" }}>
-      <div style={{ display:"flex", gap:10, marginBottom:16 }}>
-        <button onClick={()=>setMode("tasks")} style={{ flex:1, padding:12, background:mode==="tasks"?`linear-gradient(135deg,${subj.color},${subj.color}cc)`:"transparent", border:`1px solid ${mode==="tasks"?subj.color:T.border}`, borderRadius:12, color:mode==="tasks"?"#fff":T.subtext, cursor:"pointer", fontFamily:"inherit", fontSize:14, fontWeight:"bold" }}>✏️ Задачи</button>
-        <button onClick={()=>setMode("cards")} style={{ flex:1, padding:12, background:mode==="cards"?"linear-gradient(135deg,#a855f7,#7c3aed)":"transparent", border:`1px solid ${mode==="cards"?"#a855f7":T.border}`, borderRadius:12, color:mode==="cards"?"#fff":T.subtext, cursor:"pointer", fontFamily:"inherit", fontSize:14, fontWeight:"bold" }}>🃏 Карточки</button>
+      <div style={{ display:"flex", gap:10, marginBottom:14 }}>
+        <button onClick={()=>setMode("tasks")} style={{ flex:1, padding:11, background:mode==="tasks"?`linear-gradient(135deg,${subj.color},${subj.color}cc)`:"transparent", border:`1px solid ${mode==="tasks"?subj.color:T.border}`, borderRadius:12, color:mode==="tasks"?"#fff":T.subtext, cursor:"pointer", fontFamily:"inherit", fontSize:13, fontWeight:"bold" }}>✏️ Задачи</button>
+        <button onClick={()=>setMode("cards")} style={{ flex:1, padding:11, background:mode==="cards"?"linear-gradient(135deg,#a855f7,#7c3aed)":"transparent", border:`1px solid ${mode==="cards"?"#a855f7":T.border}`, borderRadius:12, color:mode==="cards"?"#fff":T.subtext, cursor:"pointer", fontFamily:"inherit", fontSize:13, fontWeight:"bold" }}>🃏 Карточки</button>
       </div>
-      <div style={{ fontSize:13, color:T.subtext, marginBottom:12 }}>Выбери раздел для тренировки:</div>
+      <div style={{ fontSize:12, color:T.subtext, marginBottom:10 }}>Выбери раздел для тренировки:</div>
       <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
         {Object.entries(subj.tasks).map(([num,task])=>(
           <button key={num} onClick={()=>onNavigate("trainer",num)} style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:12, padding:"11px 13px", textAlign:"left", cursor:"pointer", color:T.text, display:"flex", justifyContent:"space-between", alignItems:"center", fontFamily:"inherit" }}
@@ -425,7 +393,7 @@ function LearnTab({ subject, onNavigate, theme }) {
               <div style={{ fontSize:13, fontWeight:"bold", marginBottom:1 }}>{task.title} — {task.topic}</div>
               <div style={{ fontSize:11, color:T.subtext }}>{task.questions.length} задач</div>
             </div>
-            <span style={{ color:subj.color, fontSize:18 }}>→</span>
+            <span style={{ color:subj.color, fontSize:16 }}>→</span>
           </button>
         ))}
       </div>
@@ -454,7 +422,7 @@ function ExamTab({ subject, onNavigate, examStats, theme }) {
 
 function MockExamScreen({ subject, onBack, onFinish, theme }) {
   const T=THEMES[theme]; const subj=SUBJECTS[subject];
-  const allQ=Object.entries(subj.tasks).flatMap(([num,task])=>task.questions.slice(0,3).map(q=>({...q,taskTitle:task.title,taskNum:num})));
+  const allQ=Object.entries(subj.tasks).flatMap(([num,task])=>task.questions.slice(0,3).map(q=>({...q,taskTitle:task.title})));
   const [answers,setAnswers]=useState({}); const [submitted,setSubmitted]=useState(false);
   const [timeLeft,setTimeLeft]=useState(45*60); const [results,setResults]=useState(null);
   const timerRef=useRef(null);
@@ -529,14 +497,14 @@ export default function App() {
   const subj=SUBJECTS[subject]; const T=THEMES[theme];
 
   function renderContent(){
-    if(screen==="trainer"&&taskNum)return<TrainerScreen subject={subject} taskNum={taskNum} progress={progress[subject]||{solved:{},correct:{}}} onProgress={handleProgress} onBack={()=>setScreen(null)} theme={theme}/>;
-    if(screen==="exam")return<MockExamScreen subject={subject} onBack={()=>setScreen(null)} onFinish={(c,s)=>{setExamStats(e=>({...e,[subject]:{correct:c,score:s}}));setProgress(p=>({...p,meta:{...p.meta,examDone:true}}));setScreen(null);}} theme={theme}/>;
-    if(screen==="achievements")return<AchievementsScreen progress={progress} theme={theme}/>;
-    if(screen==="navigator")return<Navigator progress={progress} theme={theme}/>;
-    if(tab==="home")return<HomeScreen progress={progress} subject={subject} onNavigate={navigate} theme={theme}/>;
-    if(tab==="learn")return<LearnTab subject={subject} onNavigate={navigate} theme={theme}/>;
-    if(tab==="exam")return<ExamTab subject={subject} onNavigate={navigate} examStats={examStats} theme={theme}/>;
-    if(tab==="theory")return<TheoryScreen subject={subject} theme={theme}/>;
+    if(screen==="trainer"&&taskNum) return <TrainerScreen subject={subject} taskNum={taskNum} progress={progress[subject]||{solved:{},correct:{}}} onProgress={handleProgress} onBack={()=>setScreen(null)} theme={theme}/>;
+    if(screen==="exam") return <MockExamScreen subject={subject} onBack={()=>setScreen(null)} onFinish={(c,s)=>{setExamStats(e=>({...e,[subject]:{correct:c,score:s}}));setProgress(p=>({...p,meta:{...p.meta,examDone:true}}));setScreen(null);}} theme={theme}/>;
+    if(screen==="achievements") return <AchievementsScreen progress={progress} theme={theme}/>;
+    if(screen==="navigator") return <Navigator progress={progress} theme={theme}/>;
+    if(tab==="home") return <HomeScreen progress={progress} subject={subject} onNavigate={navigate} theme={theme}/>;
+    if(tab==="learn") return <LearnTab subject={subject} onNavigate={navigate} theme={theme}/>;
+    if(tab==="exam") return <ExamTab subject={subject} onNavigate={navigate} examStats={examStats} theme={theme}/>;
+    if(tab==="theory") return <TheoryScreen subject={subject} theme={theme}/>;
     return null;
   }
 

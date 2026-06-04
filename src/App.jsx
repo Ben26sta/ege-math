@@ -400,8 +400,17 @@ function TutorScreen({ subject, theme }) {
         })
       });
       const data = await resp.json();
-      const text2 = data.content?.map(b=>b.text||"").join("") || data.error || "Ошибка ответа";
-      setMessages(m=>[...m,{role:"assistant",text:text2}]);
+      let text2 = "Нет ответа от репетитора";
+      try {
+        if (data.content && data.content.length > 0) {
+          text2 = data.content.map(b => b.text || "").join("").trim();
+        } else if (data.error) {
+          text2 = "Ошибка API: " + JSON.stringify(data.error).slice(0, 100);
+        }
+      } catch(parseErr) {
+        text2 = "Ошибка обработки ответа";
+      }
+      setMessages(m => [...m, {role:"assistant", text: text2 || "Пустой ответ"}]);
     } catch(e) {
       setMessages(m=>[...m,{role:"assistant",text:"Ошибка подключения. Проверь интернет и попробуй снова."}]);
     }
@@ -433,7 +442,7 @@ function TutorScreen({ subject, theme }) {
               background:m.role==="user"?`linear-gradient(135deg,${subj.color},${subj.color}cc)`:`${T.card}`,
               border:m.role==="user"?"none":`1px solid ${T.border}`,
               color:m.role==="user"?"#fff":T.text, fontSize:13, lineHeight:1.7, whiteSpace:"pre-wrap" }}>
-              {m.text.replace(/\*\*(.*?)\*\*/g,"$1")}
+              {(m.text || "").replace(/\*\*(.*?)\*\*/g, "$1")}
             </div>
           </div>
         ))}

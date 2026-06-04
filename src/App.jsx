@@ -232,8 +232,8 @@ function HomeScreen({ progress, subject, onNavigate, theme }) {
       <div style={{ background:`linear-gradient(135deg,${subj.color}20,${subj.color}08)`, border:`1px solid ${subj.color}40`, borderRadius:16, padding:14, marginBottom:12, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
         <div>
           <div style={{ fontSize:12, color:T.subtext }}>Прогноз балла ЕГЭ</div>
-          <div style={{ fontSize:28, fontWeight:"bold", color:subj.color }}>{myScore}</div>
-          <div style={{ fontSize:11, color:T.subtext }}>из 100 по предмету</div>
+          <div style={{ fontSize:28, fontWeight:"bold", color:subj.color }}>{allSolved > 0 ? myScore : "—"}</div>
+          <div style={{ fontSize:11, color:T.subtext }}>{allSolved > 0 ? "из 100 по предмету" : "Реши задачи для прогноза"}</div>
         </div>
         <button onClick={()=>onNavigate("navigator")} style={{ padding:"10px 14px", background:subj.color, border:"none", borderRadius:12, color:"#fff", cursor:"pointer", fontFamily:"inherit", fontSize:13, fontWeight:"bold" }}>
           🎯 Мой вуз

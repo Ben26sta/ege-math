@@ -275,9 +275,32 @@ function TrainerScreen({ subject, taskNum, progress, onProgress, onBack, theme }
   const T=THEMES[theme]; const subj=SUBJECTS[subject]; const task=subj.tasks[taskNum];
   const [qIndex,setQIndex]=useState(0); const [answer,setAnswer]=useState(""); const [result,setResult]=useState(null);
   const [showTheory,setShowTheory]=useState(false); const [showMistakes,setShowMistakes]=useState(false);
+  const [aiText,setAiText]=useState(""); const [aiLoading,setAiLoading]=useState(false); const [showAi,setShowAi]=useState(false);
   const q=task.questions[qIndex];
+
   function checkAnswer() { const isCorrect=q.type==="choice"?answer===q.answer:answer.trim().replace(",",".")===q.answer; setResult(isCorrect?"correct":"wrong"); onProgress(subject,taskNum,isCorrect); }
-  function next() { if(qIndex<task.questions.length-1){setQIndex(qIndex+1);setAnswer("");setResult(null);setShowMistakes(false);}else onBack(); }
+  function next() { if(qIndex<task.questions.length-1){setQIndex(qIndex+1);setAnswer("");setResult(null);setShowMistakes(false);setAiText("");setShowAi(false);}else onBack(); }
+
+  async function askAI() {
+    setShowAi(true); setAiLoading(true); setAiText("");
+    try {
+      const resp = await fetch("/api/chat", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-20250514", max_tokens:600,
+          system:`Ты репетитор по предмету "${subj.title}" для подготовки к ЕГЭ. Объясняй кратко, понятно и по-русски. Используй простые слова. Давай лайфхак для запоминания.`,
+          messages:[{ role:"user", content:`Задание ЕГЭ: "${q.text}"\nПравильный ответ: ${q.answer}\nРешение: ${q.solution}\n\nОбъясни почему это правильный ответ и дай 1 лайфхак для запоминания.` }]
+        })
+      });
+      const data = await resp.json();
+      const text = data.content?.map(b=>b.text||"").join("") || data.error || "Нет ответа";
+      setAiText(text);
+    } catch(e) {
+      setAiText("Ошибка подключения: " + e.message);
+    }
+    setAiLoading(false);
+  }
+
   return (
     <div style={{ padding:"14px 16px", overflowY:"auto", maxHeight:"calc(100vh - 130px)" }}>
       <button onClick={onBack} style={{ background:"none", border:"none", color:subj.color, fontSize:14, cursor:"pointer", marginBottom:10, padding:0 }}>← Назад</button>
@@ -305,17 +328,134 @@ function TrainerScreen({ subject, taskNum, progress, onProgress, onBack, theme }
         <input value={answer} onChange={e=>setAnswer(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!result&&checkAnswer()} placeholder="Введите ответ..." disabled={!!result}
           style={{ width:"100%", padding:"12px 14px", background:T.input, border:`1px solid ${result==="correct"?"#4ade80":result==="wrong"?"#f87171":T.border}`, borderRadius:12, color:T.text, fontSize:16, outline:"none", boxSizing:"border-box", fontFamily:"inherit", marginBottom:12 }}/>
       )}
-      {!result?<button onClick={checkAnswer} disabled={!answer} style={{ width:"100%", padding:13, background:answer?`linear-gradient(135deg,${subj.color},${subj.color}cc)`:"#1e2540", border:"none", borderRadius:12, color:"#fff", fontSize:15, cursor:answer?"pointer":"not-allowed", fontFamily:"inherit" }}>Проверить</button>:(
+      {!result ? (
+        <button onClick={checkAnswer} disabled={!answer} style={{ width:"100%", padding:13, background:answer?`linear-gradient(135deg,${subj.color},${subj.color}cc)`:"#1e2540", border:"none", borderRadius:12, color:"#fff", fontSize:15, cursor:answer?"pointer":"not-allowed", fontFamily:"inherit" }}>Проверить</button>
+      ) : (
         <div>
           <div style={{ padding:13, borderRadius:12, marginBottom:10, background:result==="correct"?"rgba(74,222,128,0.1)":"rgba(248,113,113,0.1)", border:`1px solid ${result==="correct"?"#4ade80":"#f87171"}` }}>
             <div style={{ fontSize:14, fontWeight:"bold", color:result==="correct"?"#4ade80":"#f87171", marginBottom:3 }}>{result==="correct"?"✅ Верно!":"❌ Неверно. Ответ: "+q.answer}</div>
             <div style={{ fontSize:13, color:T.subtext }}>{q.solution}</div>
           </div>
-          <button onClick={next} style={{ width:"100%", padding:13, background:`linear-gradient(135deg,${subj.color},${subj.color}cc)`, border:"none", borderRadius:12, color:"#fff", fontSize:15, cursor:"pointer", fontFamily:"inherit" }}>
-            {qIndex<task.questions.length-1?"Следующий →":"Завершить ✓"}
-          </button>
+
+          {/* Кнопки: следующий + репетитор */}
+          <div style={{ display:"flex", gap:8, marginBottom:10 }}>
+            <button onClick={next} style={{ flex:1, padding:13, background:`linear-gradient(135deg,${subj.color},${subj.color}cc)`, border:"none", borderRadius:12, color:"#fff", fontSize:14, cursor:"pointer", fontFamily:"inherit" }}>
+              {qIndex<task.questions.length-1?"Следующий →":"Завершить ✓"}
+            </button>
+            <button onClick={askAI} disabled={aiLoading} style={{ padding:"13px 14px", background:"rgba(168,85,247,0.12)", border:"1px solid #a855f7", borderRadius:12, color:"#a855f7", fontSize:13, cursor:"pointer", fontFamily:"inherit", whiteSpace:"nowrap" }}>
+              {aiLoading?"⏳":"🤖 Объяснить"}
+            </button>
+          </div>
+
+          {/* Ответ репетитора */}
+          {showAi && (
+            <div style={{ background:"rgba(168,85,247,0.07)", border:"1px solid rgba(168,85,247,0.3)", borderRadius:14, padding:14 }}>
+              <div style={{ fontSize:12, color:"#a855f7", marginBottom:8, fontWeight:"bold", display:"flex", alignItems:"center", gap:6 }}>
+                <span>🤖</span> ИИ-репетитор
+              </div>
+              {aiLoading ? (
+                <div style={{ fontSize:13, color:T.subtext }}>Думаю...</div>
+              ) : (
+                <div style={{ fontSize:13, color:T.text, lineHeight:1.8, whiteSpace:"pre-wrap" }}>{aiText}</div>
+              )}
+            </div>
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+function TutorScreen({ subject, theme }) {
+  const T=THEMES[theme]; const subj=SUBJECTS[subject];
+  const [messages,setMessages]=useState([
+    { role:"assistant", text:`Привет! Я ИИ-репетитор по предмету **${subj.title}**. Задай любой вопрос — объясню понятно и с примерами 😊` }
+  ]);
+  const [input,setInput]=useState(""); const [loading,setLoading]=useState(false);
+  const bottomRef = useRef(null);
+
+  useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:"smooth"}); },[messages]);
+
+  const QUICK = {
+    math:["Объясни логарифмы","Как решать квадратные уравнения?","Что такое производная?","Тригонометрия — с чего начать?"],
+    russian:["Объясни ударения в ЕГЭ","Что такое паронимы?","Деепричастный оборот — правила","Как найти главную мысль текста?"],
+    social:["Что такое ВВП?","Объясни закон спроса","Три ветви власти в РФ","Что такое социальная мобильность?"],
+    english:["Make vs Do — в чём разница?","Объясни Present Perfect","Словообразование в ЕГЭ","Как писать письмо другу?"],
+  };
+
+  async function sendMessage(text) {
+    const userMsg = text || input.trim();
+    if(!userMsg || loading) return;
+    setInput("");
+    setMessages(m=>[...m,{role:"user",text:userMsg}]);
+    setLoading(true);
+    try {
+      const history = messages.slice(-6).map(m=>({ role: m.role==="assistant"?"assistant":"user", content: m.text }));
+      const resp = await fetch("/api/chat", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-20250514", max_tokens:800,
+          system:`Ты репетитор по предмету "${subj.title}" для подготовки к ЕГЭ 2026. Отвечай по-русски, кратко и понятно. Используй примеры. Если уместно — давай лайфхаки для запоминания. Не пиши длинные тексты — максимум 200 слов.`,
+          messages:[...history,{role:"user",content:userMsg}]
+        })
+      });
+      const data = await resp.json();
+      const text2 = data.content?.map(b=>b.text||"").join("") || data.error || "Ошибка ответа";
+      setMessages(m=>[...m,{role:"assistant",text:text2}]);
+    } catch(e) {
+      setMessages(m=>[...m,{role:"assistant",text:"Ошибка подключения. Проверь интернет и попробуй снова."}]);
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", height:"calc(100vh - 175px)" }}>
+      {/* Шапка */}
+      <div style={{ padding:"12px 16px 8px", borderBottom:`1px solid ${T.border}` }}>
+        <div style={{ fontSize:15, fontWeight:"bold", color:T.text }}>🤖 ИИ-репетитор — {subj.title}</div>
+        <div style={{ fontSize:11, color:T.subtext }}>Задай любой вопрос по предмету</div>
+      </div>
+
+      {/* Быстрые вопросы */}
+      {messages.length <= 1 && (
+        <div style={{ padding:"10px 16px 0", display:"flex", gap:6, flexWrap:"wrap" }}>
+          {(QUICK[subject]||[]).map(q=>(
+            <button key={q} onClick={()=>sendMessage(q)} style={{ padding:"6px 12px", borderRadius:18, border:`1px solid ${T.border}`, background:"transparent", color:T.subtext, fontSize:12, cursor:"pointer", fontFamily:"inherit" }}>{q}</button>
+          ))}
+        </div>
+      )}
+
+      {/* Сообщения */}
+      <div style={{ flex:1, overflowY:"auto", padding:"12px 16px", display:"flex", flexDirection:"column", gap:10 }}>
+        {messages.map((m,i)=>(
+          <div key={i} style={{ display:"flex", justifyContent:m.role==="user"?"flex-end":"flex-start" }}>
+            <div style={{ maxWidth:"85%", padding:"10px 14px", borderRadius:m.role==="user"?"16px 16px 4px 16px":"16px 16px 16px 4px",
+              background:m.role==="user"?`linear-gradient(135deg,${subj.color},${subj.color}cc)`:`${T.card}`,
+              border:m.role==="user"?"none":`1px solid ${T.border}`,
+              color:m.role==="user"?"#fff":T.text, fontSize:13, lineHeight:1.7, whiteSpace:"pre-wrap" }}>
+              {m.text.replace(/\*\*(.*?)\*\*/g,"$1")}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div style={{ display:"flex", justifyContent:"flex-start" }}>
+            <div style={{ padding:"10px 16px", borderRadius:"16px 16px 16px 4px", background:T.card, border:`1px solid ${T.border}`, color:T.subtext, fontSize:13 }}>
+              ✍️ Думаю...
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef}/>
+      </div>
+
+      {/* Ввод */}
+      <div style={{ padding:"10px 16px 14px", borderTop:`1px solid ${T.border}`, display:"flex", gap:8 }}>
+        <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&sendMessage()}
+          placeholder="Задай вопрос репетитору..."
+          style={{ flex:1, padding:"11px 14px", background:T.input, border:`1px solid ${T.border}`, borderRadius:24, color:T.text, fontSize:14, outline:"none", fontFamily:"inherit" }}/>
+        <button onClick={()=>sendMessage()} disabled={!input.trim()||loading} style={{ width:44, height:44, borderRadius:"50%", background:input.trim()&&!loading?`linear-gradient(135deg,${subj.color},${subj.color}cc)`:"#1e2540", border:"none", cursor:input.trim()&&!loading?"pointer":"default", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
+          ➤
+        </button>
+      </div>
     </div>
   );
 }
@@ -505,10 +645,11 @@ export default function App() {
     if(tab==="learn") return <LearnTab subject={subject} onNavigate={navigate} theme={theme}/>;
     if(tab==="exam") return <ExamTab subject={subject} onNavigate={navigate} examStats={examStats} theme={theme}/>;
     if(tab==="theory") return <TheoryScreen subject={subject} theme={theme}/>;
+    if(tab==="tutor") return <TutorScreen subject={subject} theme={theme}/>;
     return null;
   }
 
-  const tabs=[{id:"home",icon:"📊",label:"Главная"},{id:"learn",icon:"✏️",label:"Учиться"},{id:"exam",icon:"📝",label:"Экзамен"},{id:"theory",icon:"📖",label:"Теория"}];
+  const tabs=[{id:"home",icon:"📊",label:"Главная"},{id:"learn",icon:"✏️",label:"Учиться"},{id:"exam",icon:"📝",label:"Экзамен"},{id:"theory",icon:"📖",label:"Теория"},{id:"tutor",icon:"🤖",label:"Репетитор"}];
 
   return(
     <div style={{ minHeight:"100vh", background:T.bg, color:T.text, fontFamily:"'Georgia', serif", maxWidth:480, margin:"0 auto" }}>

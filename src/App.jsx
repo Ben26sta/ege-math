@@ -287,7 +287,7 @@ function TrainerScreen({ subject, taskNum, progress, onProgress, onBack, theme }
       const resp = await fetch("/api/chat", {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:600,
+          model:"claude-sonnet-4-5", max_tokens:600,
           system:`Ты репетитор по предмету "${subj.title}" для подготовки к ЕГЭ. Объясняй кратко, понятно и по-русски. Используй простые слова. Давай лайфхак для запоминания.`,
           messages:[{ role:"user", content:`Задание ЕГЭ: "${q.text}"\nПравильный ответ: ${q.answer}\nРешение: ${q.solution}\n\nОбъясни почему это правильный ответ и дай 1 лайфхак для запоминания.` }]
         })
@@ -394,7 +394,7 @@ function TutorScreen({ subject, theme }) {
       const resp = await fetch("/api/chat", {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:800,
+          model:"claude-sonnet-4-5", max_tokens:800,
           system:`Ты репетитор по предмету "${subj.title}" для подготовки к ЕГЭ 2026. Отвечай по-русски, кратко и понятно. Используй примеры. Если уместно — давай лайфхаки для запоминания. Не пиши длинные тексты — максимум 200 слов.`,
           messages:[...history,{role:"user",content:userMsg}]
         })

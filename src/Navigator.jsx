@@ -48,12 +48,11 @@ export default function Navigator({ progress, theme }) {
         <div style={{ marginBottom:16 }}>
           <div style={{ fontSize:13, fontWeight:"bold", color:T.text, marginBottom:10 }}>Выбери направление:</div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
-            {Object.entries(UNI_INFO).map(([k,v])=>(
+            {Object.entries(CATEGORIES).filter(([k])=>k!=="all").map(([k,v])=>(
               <button key={k} onClick={()=>{setSelectedCategory(k);setStep("select");}} style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, padding:"12px 14px", cursor:"pointer", fontFamily:"inherit", textAlign:"left", transition:"all 0.2s" }}
                 onMouseEnter={e=>e.currentTarget.style.borderColor="#4f7ef7"} onMouseLeave={e=>e.currentTarget.style.borderColor=T.border}>
-                <div style={{ fontSize:22, marginBottom:5 }}>{v.emoji}</div>
-                <div style={{ fontSize:13, fontWeight:"bold", color:T.text }}>{CATEGORIES[k]?.split(" /")[0]}</div>
-                <div style={{ fontSize:11, color:T.subtext, marginTop:2 }}>{v.career.split(",")[0]}</div>
+                <div style={{ fontSize:22, marginBottom:5 }}>{CAT_EMOJI[k]||"📚"}</div>
+                <div style={{ fontSize:13, fontWeight:"bold", color:T.text }}>{v.split(" /")[0]}</div>
               </button>
             ))}
           </div>

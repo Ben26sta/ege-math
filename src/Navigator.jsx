@@ -6,14 +6,9 @@ const THEMES = {
   light: { bg:"#f0f2f8", card:"#ffffff", border:"#d0d8f0", text:"#1a2040", subtext:"#5566aa", header:"#e0e4f4", input:"#f8f9ff" }
 };
 
-// Дополнительная информация о направлениях
-const UNI_INFO = {
-  tech: { emoji:"💻", career:"Разработчик, Data Scientist, системный архитектор, аналитик", salary:"от 120 000 ₽ в Москве" },
-  med: { emoji:"🏥", career:"Врач, хирург, педиатр, стоматолог, фармацевт", salary:"от 60 000 ₽, частная практика — выше" },
-  law: { emoji:"⚖️", career:"Юрист, адвокат, нотариус, судья, корпоративный советник", salary:"от 80 000 ₽" },
-  econ: { emoji:"📈", career:"Финансист, экономист, банкир, аудитор, предприниматель", salary:"от 80 000 ₽" },
-  hum: { emoji:"🌍", career:"Переводчик, дипломат, журналист, PR-специалист", salary:"от 60 000 ₽" },
-  ped: { emoji:"🍎", career:"Учитель, методист, педагог-психолог, куратор", salary:"от 40 000 ₽ + надбавки" },
+// Иконки категорий
+const CAT_EMOJI = {
+  tech:"💻", med:"🏥", law:"⚖️", econ:"📈", hum:"🌍", ped:"🍎"
 };
 
 const TIER_LABELS = {
@@ -131,7 +126,7 @@ export default function Navigator({ progress, theme }) {
 
   if (step === "result" && selectedUni) {
     const u = selectedUni;
-    const info = UNI_INFO[u.category];
+    
 
     return (
       <div style={{ padding:16, overflowY:"auto", maxHeight:"calc(100vh - 175px)" }}>
@@ -175,27 +170,29 @@ export default function Navigator({ progress, theme }) {
         </div>
 
         {/* Информация о специальности */}
-        {info && (
-          <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:16, padding:16, marginBottom:12 }}>
-            <div style={{ fontSize:14, fontWeight:"bold", color:T.text, marginBottom:12 }}>{info.emoji} О специальности</div>
-            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+        <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:16, padding:16, marginBottom:12 }}>
+          <div style={{ fontSize:14, fontWeight:"bold", color:T.text, marginBottom:12 }}>{CAT_EMOJI[u.category]||"📚"} О специальности</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {u.profession && (
               <div style={{ background:T.input, borderRadius:12, padding:12 }}>
                 <div style={{ fontSize:11, color:T.subtext, marginBottom:4, textTransform:"uppercase", letterSpacing:1 }}>Кем можно работать</div>
-                <div style={{ fontSize:13, color:T.text, lineHeight:1.6 }}>{info.career}</div>
+                <div style={{ fontSize:13, color:T.text, lineHeight:1.6 }}>{u.profession}</div>
               </div>
+            )}
+            {u.salary && (
               <div style={{ background:T.input, borderRadius:12, padding:12 }}>
-                <div style={{ fontSize:11, color:T.subtext, marginBottom:4, textTransform:"uppercase", letterSpacing:1 }}>Зарплата</div>
-                <div style={{ fontSize:13, color:"#4ade80", fontWeight:"bold" }}>{info.salary}</div>
+                <div style={{ fontSize:11, color:T.subtext, marginBottom:4, textTransform:"uppercase", letterSpacing:1 }}>Средняя зарплата</div>
+                <div style={{ fontSize:13, color:"#4ade80", fontWeight:"bold" }}>{u.salary}</div>
               </div>
+            )}
+            {u.duration && (
               <div style={{ background:T.input, borderRadius:12, padding:12 }}>
                 <div style={{ fontSize:11, color:T.subtext, marginBottom:4, textTransform:"uppercase", letterSpacing:1 }}>Срок обучения</div>
-                <div style={{ fontSize:13, color:T.text }}>
-                  {u.category==="med"?"6 лет (специалитет)":u.category==="law"&&u.faculty.includes("специалитет")?"5 лет":"4 года (бакалавриат)"}
-                </div>
+                <div style={{ fontSize:13, color:T.text }}>{u.duration}</div>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Дисклеймер */}
         <div style={{ background:"rgba(248,113,113,0.05)", border:"1px solid rgba(248,113,113,0.15)", borderRadius:12, padding:10, marginBottom:14, fontSize:12, color:T.subtext, lineHeight:1.6 }}>
